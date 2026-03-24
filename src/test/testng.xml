@@ -1,0 +1,20 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="YouTrackAPITests" parallel="classes" thread-count="5">
+
+    <!-- Тесты для пользователей -->
+    <test name="UserTests">
+        <classes>
+            <class name="api.tests.PositiveUserTests"/>
+            <class name="api.tests.NegativeUserTests"/>
+        </classes>
+    </test>
+
+    <!-- Тесты для Issue -->
+    <test name="IssueTests">
+        <classes>
+            <class name="api.tests.PositiveIssueTests"/>
+            <class name="api.tests.NegativeIssueTests"/>
+        </classes>
+    </test>
+
+</suite>
