@@ -1,7 +1,13 @@
 package api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class IssueDTO {
 
     @JsonProperty("project")
@@ -13,56 +19,17 @@ public class IssueDTO {
     @JsonProperty("description")
     private String description;
 
-    public IssueDTO() {
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Project {
+        @JsonProperty("id")
+        private String id;
     }
 
     public IssueDTO(String projectId, String summary, String description) {
         this.project = new Project(projectId);
         this.summary = summary;
-        this.description = description;
-    }
-
-    public static class Project {
-        @JsonProperty("id")
-        private String id;
-
-        public Project() {
-        }
-
-        public Project(String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
         this.description = description;
     }
 }

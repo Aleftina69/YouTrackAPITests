@@ -2,30 +2,30 @@ package api.tests;
 
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
+import api.utils.Endpoints;
 
 public class PositiveUserTests extends BaseTest {
 
     @Test
     public void getCurrentUserTest() {
-        SoftAssert soft = new SoftAssert();
+        initSoftAssert();
 
-        Response response = givenAuth().get("/api/users/me");
+        Response response = givenAuth().get(Endpoints.USERS_ME);
         soft.assertEquals(response.statusCode(), 200, "Не удалось получить текущего пользователя");
-        soft.assertTrue(response.contentType().contains("application/json"), "Ответ не JSON");
+        checkJsonResponse(response);
         soft.assertEquals(response.jsonPath().getString("login"), username, "Login пользователя не совпадает");
 
-        soft.assertAll();
+        assertAll();
     }
 
     @Test
     public void getProjectListTest() {
-        SoftAssert soft = new SoftAssert();
+        initSoftAssert();
 
-        Response response = givenAuth().get("/api/admin/projects");
+        Response response = givenAuth().get(Endpoints.PROJECTS);
         soft.assertEquals(response.statusCode(), 200, "Не удалось получить список проектов");
-        soft.assertTrue(response.contentType().contains("application/json"), "Ответ не JSON");
+        checkJsonResponse(response);
 
-        soft.assertAll();
+        assertAll();
     }
 }

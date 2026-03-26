@@ -1,36 +1,49 @@
 package api.tests;
 
-import io.restassured.RestAssured;
+import api.utils.Endpoints;
+import api.utils.Specifications;
 import io.restassured.response.Response;
+import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
+
+import static io.restassured.RestAssured.given;
 
 public class NegativeUserTests extends BaseTest {
 
     @Test
     public void noAuthTest() {
-        SoftAssert soft = new SoftAssert();
-        Response response = givenNoAuth().get("/api/users/me");
-        soft.assertEquals(response.statusCode(), 401, "Запрос без авторизации не вернул 401");
-        soft.assertAll();
+        Response response = given()
+                .baseUri(baseUrl)
+                .when()
+                .get(Endpoints.USERS_ME)
+                .then()
+                .extract().response();
+
+        Assert.assertEquals(response.statusCode(), 401, "Запрос без авторизации не вернул 401");
     }
 
     @Test
     public void wrongEndpointTest() {
-        SoftAssert soft = new SoftAssert();
-        Response response = givenAuth().get("/api/users/invalidEndpoint");
-        soft.assertEquals(response.statusCode(), 404, "Неверный эндпоинт не вернул 404");
-        soft.assertAll();
+        Response response = given()
+                .spec(Specifications.requestSpec)
+                .when()
+                .get(Endpoints.INVALID_ENDPOINT)
+                .then()
+                .extract().response();
+
+        Assert.assertEquals(response.statusCode(), 404, "Неверный эндпоинт не вернул 404");
     }
 
     @Test
     public void wrongTokenTest() {
-        SoftAssert soft = new SoftAssert();
-        Response response = RestAssured.given()
+        Response response = given()
                 .baseUri(baseUrl)
                 .auth().preemptive().basic("wrong", "wrong")
-                .get("/api/users/me");
-        soft.assertEquals(response.statusCode(), 401, "Неверный токен не вернул 401");
-        soft.assertAll();
+                .when()
+                .get(Endpoints.USERS_ME)
+                .then()
+                .extract().response();
+
+        Assert.assertEquals(response.statusCode(), 401, "Неверный токен не вернул 401");
     }
 }
