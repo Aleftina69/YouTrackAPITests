@@ -7,17 +7,13 @@ import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static io.restassured.RestAssured.given;
-
 public class NegativeIssueTests extends BaseTest {
 
     @Test
     public void createIssueEmptySummaryTest() {
         IssueDTO issue = new IssueDTO(projectId, "", "Empty summary");
 
-        Response response = given()
-                .spec(Specifications.requestSpec)
-                .body(issue)
+        Response response = spec().body(issue)
                 .when()
                 .post(Endpoints.ISSUES)
                 .then()
@@ -29,8 +25,7 @@ public class NegativeIssueTests extends BaseTest {
 
     @Test
     public void deleteNonExistingIssueTest() {
-        Response response = given()
-                .spec(Specifications.requestSpec)
+        Response response = spec()
                 .when()
                 .delete(Endpoints.issueById("NonExistingId"))
                 .then()
@@ -41,8 +36,7 @@ public class NegativeIssueTests extends BaseTest {
 
     @Test
     public void getIssueWrongProjectTest() {
-        Response response = given()
-                .spec(Specifications.requestSpec)
+        Response response = spec()
                 .when()
                 .get(Endpoints.issueById("0000000"))
                 .then()

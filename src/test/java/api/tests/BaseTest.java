@@ -1,26 +1,30 @@
 package api.tests;
 
+import api.utils.Specifications;
 import io.restassured.specification.RequestSpecification;
+import org.testng.annotations.BeforeMethod;
 import org.testng.asserts.SoftAssert;
+
+import java.io.InputStream;
 import java.util.Properties;
-import static io.restassured.RestAssured.given;
 
 public class BaseTest {
+
+    protected SoftAssert soft;
 
     protected String baseUrl;
     protected String username;
     protected String password;
     protected String projectId;
 
-    protected SoftAssert soft;
+    @BeforeMethod
+    protected void initSoftAssert() {
+        soft = new SoftAssert();
 
-    public BaseTest() {
-        try {
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+            if (input == null) throw new RuntimeException("config.properties не найден");
             Properties props = new Properties();
-            try (var input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
-                if (input == null) throw new RuntimeException("config.properties не найден");
-                props.load(input);
-            }
+            props.load(input);
 
             baseUrl = props.getProperty("base.url");
             username = props.getProperty("admin.username");
@@ -32,21 +36,8 @@ public class BaseTest {
         }
     }
 
-    protected RequestSpecification givenAuth() {
-        return given()
-                .baseUri(baseUrl)
-                .auth().preemptive().basic(username, password)
-                .contentType("application/json");
-    }
-
-    protected RequestSpecification givenNoAuth() {
-        return given()
-                .baseUri(baseUrl)
-                .contentType("application/json");
-    }
-
-    protected void initSoftAssert() {
-        soft = new SoftAssert();
+    protected RequestSpecification spec() {
+        return Specifications.requestSpec;
     }
 
     protected void assertAll() {

@@ -1,19 +1,16 @@
 package api.tests;
 
 import api.utils.Endpoints;
-import api.utils.Specifications;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import static io.restassured.RestAssured.given;
 
 public class NegativeUserTests extends BaseTest {
 
     @Test
     public void noAuthTest() {
-        Response response = given()
-                .baseUri(baseUrl)
+        Response response = spec()
+                .auth().none()
                 .when()
                 .get(Endpoints.USERS_ME)
                 .then()
@@ -24,8 +21,7 @@ public class NegativeUserTests extends BaseTest {
 
     @Test
     public void wrongEndpointTest() {
-        Response response = given()
-                .spec(Specifications.requestSpec)
+        Response response = spec()
                 .when()
                 .get(Endpoints.INVALID_ENDPOINT)
                 .then()
@@ -36,8 +32,7 @@ public class NegativeUserTests extends BaseTest {
 
     @Test
     public void wrongTokenTest() {
-        Response response = given()
-                .baseUri(baseUrl)
+        Response response = spec()
                 .auth().preemptive().basic("wrong", "wrong")
                 .when()
                 .get(Endpoints.USERS_ME)
